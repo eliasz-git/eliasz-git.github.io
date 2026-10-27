@@ -176,15 +176,18 @@ const siteJsonLd = JSON.stringify({
 
     <script>
       (function () {
-        const desk = document.getElementById('desktop');
-        const wall = document.getElementById('desktop-wall');
+        const deskEl = document.getElementById('desktop');
+        const wallEl = document.getElementById('desktop-wall') as HTMLCanvasElement | null;
         const clock = document.getElementById('taskbar-clock');
-        if (!desk || !wall) return;
+        const ctxEl = wallEl?.getContext('2d');
+        if (!deskEl || !wallEl || !ctxEl) return;
+        const desk: HTMLElement = deskEl;
+        const wall: HTMLCanvasElement = wallEl;
+        const ctx: CanvasRenderingContext2D = ctxEl;
 
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         // ---------- wallpaper canvas: network + snow ----------
-        const ctx = wall.getContext('2d');
         const nodes = [
           { x: 0.12, y: 0.18, label: 'home' },
           { x: 0.32, y: 0.12, label: 'media' },
@@ -209,7 +212,7 @@ const siteJsonLd = JSON.stringify({
           [2, 5],
           [1, 5],
         ];
-        const snow = [];
+        const snow: { x: number; y: number; r: number; v: number; drift: number }[] = [];
         const N = reduced ? 0 : 34;
         for (let i = 0; i < N; i++) {
           snow.push({
@@ -258,7 +261,7 @@ const siteJsonLd = JSON.stringify({
           attributeFilter: ['data-variant'],
         });
 
-        function segDist(px, py, ax, ay, bx, by) {
+        function segDist(px: number, py: number, ax: number, ay: number, bx: number, by: number) {
           const dx = bx - ax;
           const dy = by - ay;
           const l2 = dx * dx + dy * dy;
@@ -358,7 +361,7 @@ const siteJsonLd = JSON.stringify({
         let z = 10;
         const TASKBAR = 34;
 
-        function focusWin(win) {
+        function focusWin(win: HTMLElement) {
           z++;
           win.style.zIndex = String(z);
           win.classList.add('win--active');
@@ -367,17 +370,19 @@ const siteJsonLd = JSON.stringify({
           });
         }
 
-        function closeWindow(win) {
+        function closeWindow(win: HTMLElement) {
+          const hadFocus = win.contains(document.activeElement);
           win.hidden = true;
           win.classList.remove('win--active');
+          if (hadFocus) document.querySelector<HTMLElement>(`[data-open="${win.id}"]`)?.focus();
         }
 
         // icons: open the window if it exists on this page, else navigate
         document.addEventListener('click', (e) => {
-          const icon = e.target.closest('[data-open]');
+          const icon = (e.target as Element).closest('[data-open]');
           if (!icon) return;
           const id = icon.getAttribute('data-open');
-          const win = document.getElementById(id);
+          const win = id ? document.getElementById(id) : null;
           if (!win) return;
           e.preventDefault();
           if (win.hidden) {
@@ -391,37 +396,37 @@ const siteJsonLd = JSON.stringify({
 
         // close buttons
         document.addEventListener('click', (e) => {
-          const btn = e.target.closest('.win-close');
+          const btn = (e.target as Element).closest('.win-close');
           if (!btn) return;
-          const win = btn.closest('.win');
+          const win = btn.closest<HTMLElement>('.win');
           if (win) closeWindow(win);
         });
 
         // bring to front on mousedown
         document.addEventListener('mousedown', (e) => {
-          const win = e.target.closest('.win');
+          const win = (e.target as Element).closest<HTMLElement>('.win');
           if (win && !win.hidden) focusWin(win);
         });
 
         // drag windows by their title bar
         document.addEventListener('mousedown', (e) => {
-          const bar = e.target.closest('.win-bar');
+          const bar = (e.target as Element).closest('.win-bar');
           if (!bar) return;
-          const win = bar.closest('.win');
+          const win = bar.closest<HTMLElement>('.win');
           if (!win || win.hidden) return;
 
           const rect = win.getBoundingClientRect();
           const offX = e.clientX - rect.left;
           const offY = e.clientY - rect.top;
 
-          function move(ev) {
+          const move = (ev: MouseEvent) => {
             let x = ev.clientX - offX - deskRect.left;
             let y = ev.clientY - offY - deskRect.top;
             x = Math.max(0, Math.min(x, deskRect.width - win.offsetWidth));
             y = Math.max(0, Math.min(y, deskRect.height - TASKBAR - 4));
             win.style.left = x + 'px';
             win.style.top = y + 'px';
-          }
+          };
 
           function up() {
             document.removeEventListener('mousemove', move);
@@ -434,9 +439,9 @@ const siteJsonLd = JSON.stringify({
 
         // resize windows by the corner handle
         document.addEventListener('mousedown', (e) => {
-          const handle = e.target.closest('.win-resize');
+          const handle = (e.target as Element).closest('.win-resize');
           if (!handle) return;
-          const win = handle.closest('.win');
+          const win = handle.closest<HTMLElement>('.win');
           if (!win || win.hidden) return;
           e.preventDefault();
 
@@ -447,14 +452,14 @@ const siteJsonLd = JSON.stringify({
           const minW = 280;
           const minH = 140;
 
-          function move(ev) {
+          const move = (ev: MouseEvent) => {
             const maxW = deskRect.width - win.offsetLeft;
             const maxH = deskRect.height - win.offsetTop - TASKBAR - 4;
             const w = Math.max(minW, Math.min(startW + (ev.clientX - startX), maxW));
             const h = Math.max(minH, Math.min(startH + (ev.clientY - startY), maxH));
             win.style.width = w + 'px';
             win.style.height = h + 'px';
-          }
+          };
 
           function up() {
             document.removeEventListener('mousemove', move);
@@ -468,7 +473,7 @@ const siteJsonLd = JSON.stringify({
         // keyboard: escape closes active window
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') {
-            const active = document.querySelector('.win--active');
+            const active = document.querySelector<HTMLElement>('.win--active');
             if (active && !active.hidden && active.querySelector('.win-close')) {
               closeWindow(active);
             }
