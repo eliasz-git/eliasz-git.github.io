@@ -112,19 +112,23 @@ const fsJson = JSON.stringify(fsTree).replace(/</g, '\\u003c');
     }
 
     function esc(s) {
-      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
 
     function entryHtml(name, node) {
       if (node.type === 'dir') return '<span class="terminal-dir">' + esc(name) + '/</span>';
-      return '<a class="terminal-link" href="' + node.link + '">' + esc(name) + '</a>';
+      return '<a class="terminal-link" href="' + esc(node.link) + '">' + esc(name) + '</a>';
     }
 
     function ls(path) {
       const segs = path ? resolvePath(path) : [...cwd];
       if (!segs) return 'ls: cannot access \'' + esc(path) + '\': no such file or directory';
       const node = nodeAt(segs);
-      if (node.type === 'file') return '<a href="' + node.link + '">' + esc(node.title) + '</a>';
+      if (node.type === 'file') return '<a href="' + esc(node.link) + '">' + esc(node.title) + '</a>';
       const names = Object.keys(node.children);
       if (!names.length) return '(empty)';
       return names.map((n) => entryHtml(n, node.children[n])).join('  ');
@@ -149,7 +153,7 @@ const fsJson = JSON.stringify(fsTree).replace(/</g, '\\u003c');
       if (!segs) return 'cat: ' + esc(path) + ': no such file';
       const node = nodeAt(segs);
       if (node.type === 'dir') return 'cat: ' + esc(path) + ': is a directory';
-      return node.title + ' -> <a href="' + node.link + '">' + node.link + '</a>';
+      return esc(node.title) + ' -> <a href="' + esc(node.link) + '">' + esc(node.link) + '</a>';
     }
 
     const COMMANDS = {

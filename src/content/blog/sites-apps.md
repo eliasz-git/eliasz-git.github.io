@@ -87,7 +87,7 @@ Happy New Year! Here's what I actually use every day. Most of this stuff is free
 
 [Cloudflare WARP](https://1.1.1.1) - Free VPN that's actually fast.
 
-[BoringNotch](https://github.com/iSapozhnik/BoringNotch) - Makes the notch useful.
+[BoringNotch](https://github.com/TheBoredTeam/boring.notch) - Makes the notch useful.
 
 [Raycast](https://www.raycast.com) - Better Spotlight.
 
