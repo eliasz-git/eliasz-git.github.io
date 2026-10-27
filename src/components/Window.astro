@@ -10,7 +10,7 @@ interface Props {
   closable?: boolean;
 }
 const { id, title, icon, open = false, width, x = 140, y = 48, closable = true } = Astro.props;
-const style = `${width ? `width:${width};` : ''}left:${x}px;top:${y}px`;
+const style = `${width ? `width:${width};` : ''}left:${x}px;top:${y}px;--win-y:${y}px`;
 ---
 
 <section class:list={['win', { 'win--content': !closable }]} id={id} style={style} hidden={!open} role="dialog" aria-label={title} tabindex="-1">

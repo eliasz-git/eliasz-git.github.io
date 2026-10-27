@@ -24,13 +24,13 @@
   --bg-hover: #434c5e;
   --text: #d8dee9;
   --text-dim: #e5e9f0;
-  --muted: #616e88;
+  --muted: #b4bccb;
   --border: #4c566a;
   --accent: #88c0d0;
-  --accent-2: #81a1c1;
+  --accent-2: #9fb7d3;
   --accent-strong: #8fbcbb;
   --code-bg: #3b4252;
-  --link: #81a1c1;
+  --link: #a3bcd6;
   --link-hover: #88c0d0;
   --shadow: rgba(0, 0, 0, 0.25);
 }
@@ -44,12 +44,12 @@
   --text-dim: #434c5e;
   --muted: #5b6579;
   --border: #d8dee9;
-  --accent: #5e81ac;
-  --accent-2: #81a1c1;
+  --accent: #486891;
+  --accent-2: #3e5f8a;
   --accent-strong: #4c566a;
   --code-bg: #e5e9f0;
-  --link: #5e81ac;
-  --link-hover: #81a1c1;
+  --link: #486891;
+  --link-hover: #3e5f8a;
   --shadow: rgba(46, 52, 64, 0.15);
 }
 
@@ -101,7 +101,8 @@ a:hover {
   text-decoration: underline;
 }
 
-a:focus-visible {
+a:focus-visible,
+button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -306,7 +307,8 @@ article img {
 /* ===================== MISC ===================== */
 .skip-link {
   position: absolute;
-  top: -40px;
+  top: 0;
+  transform: translateY(-110%);
   left: 0;
   background: var(--accent);
   color: var(--bg);
@@ -317,7 +319,7 @@ article img {
 }
 
 .skip-link:focus {
-  top: 0;
+  transform: none;
 }
 
 .back {
@@ -511,7 +513,8 @@ article img {
 
 .win-body {
   padding: var(--space-2) var(--space-3);
-  max-height: calc(100dvh - 140px);
+  /* window top + title bar + taskbar + gap */
+  max-height: calc(100dvh - var(--win-y, 56px) - 90px);
   overflow-y: auto;
   flex: 1;
   min-height: 0;
@@ -649,6 +652,10 @@ article img {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   overflow: hidden;
+}
+
+.terminal:focus-within {
+  border-color: var(--accent);
 }
 
 .terminal-body {
