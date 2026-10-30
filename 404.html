@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — not found · tundra-node</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="public/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="neofetch">
+    <div class="neofetch-wrap">
+      <div class="ascii">
+        _____       ___       ___       _____
+       /\  __\     /\  \     /\  \     /\  __\
+       \ \  __/    /::\  \   /::\  \   \ \  __\
+        \ \ \__\  /:/\:\  \ /:/\:\  \   \ \ \__\
+         \ \_____/ \/__\:\  /::\~\:\__\   \ \____\
+          \/____/     \/__/  \/____/       \/____/
+      </div>
+      <div class="info">
+        <div class="info-line"><span class="label">status:</span> <span class="value err">404 — not found</span></div>
+        <div class="info-line"><span class="label">hint:</span> <span class="value">the requested path does not exist on this node.</span></div>
+        <div class="info-line"><span class="label">try:</span> <span class="value"><a href="#" data-cmd="help">help</a> · <a href="#" data-cmd="about">about</a> · <a href="#" data-cmd="projects">projects</a></span></div>
+      </div>
+    </div>
+    <hr class="divider">
+  </header>
+
+  <nav class="nav">
+    <a href="#" data-cmd="help">help</a>
+    <a href="#" data-cmd="about">about</a>
+    <a href="#" data-cmd="projects">projects</a>
+    <a href="#" data-cmd="contact">contact</a>
+  </nav>
+
+  <main class="terminal" id="terminal">
+    <div class="terminal-body" id="term-body" role="log" aria-live="polite">
+      <div class="out err">error: route not found</div>
+      <div class="out hint">type `help` for available commands, or click a nav link above.</div>
+    </div>
+    <div class="terminal-line">
+      <span class="terminal-prompt" id="term-prompt">elias@tundra-node:~$</span>
+      <input class="terminal-input" id="term-input" type="text"
+             autocomplete="off" autocapitalize="off" spellcheck="false"
+             aria-label="Terminal command" autofocus>
+    </div>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Elias Zeiner's personal site — terminal/Neofetch theme. Privacy tools, homelab, cybersecurity, open source.">
+  <title>tundra-node — elias zeiner</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="public/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="public/favicon.ico">
+</head>
+<body>
+  <header class="neofetch">
+    <div class="neofetch-wrap">
+      <div class="ascii">
+        _____       ___       ___       _____
+       /\  __\     /\  \     /\  \     /\  __\
+       \ \  __/    /::\  \   /::\  \   \ \  __\
+        \ \ \__\  /:/\:\  \ /:/\:\  \   \ \ \__\
+         \ \_____/ \/__\:\  /::\~\:\__\   \ \____\
+          \/____/     \/__/  \/____/       \/____/
+      </div>
+      <div class="info">
+        <div class="info-line"><span class="label">name:</span> <span class="value">Elias Zeiner</span></div>
+        <div class="info-line"><span class="label">handle:</span> <span class="value">elias / tundra-node</span></div>
+        <div class="info-line"><span class="label">os:</span> <span class="value">tundraOS 7.2 (static)</span></div>
+        <div class="info-line"><span class="label">shell:</span> <span class="value">zsh 5.9</span></div>
+        <div class="info-line"><span class="label">uptime:</span> <span class="value">47 days, 12:03:15</span></div>
+        <div class="info-line"><span class="label">status:</span> <span class="value"><span style="color:#50fa7b">●</span> active</span></div>
+        <div class="info-line"><span class="label">bio:</span> <span class="value">Privacy engineer, homelabber, and open-source contributor. I build tools for I2P, NixOS systems, and secure software.</span></div>
+        <div class="info-line"><span class="label">site:</span> <span class="value"><a href="https://eliasz.codeberg.page" target="_blank" rel="noopener">eliasz.codeberg.page</a></span></div>
+        <div class="info-line"><span class="label">codeberg:</span> <span class="value"><a href="https://codeberg.org/eliasz" target="_blank" rel="noopener">codeberg.org/eliasz</a></span></div>
+        <div class="info-line"><span class="label">linkedin:</span> <span class="value"><a href="https://www.linkedin.com/in/eliaszeiner" target="_blank" rel="noopener">linkedin.com/in/eliaszeiner</a></span></div>
+        <div class="info-line"><span class="label">email:</span> <span class="value"><a href="mailto:eliaspublic@icloud.com">eliaspublic@icloud.com</a></span></div>
+      </div>
+    </div>
+    <hr class="divider">
+  </header>
+
+  <nav class="nav">
+    <a href="#" data-cmd="help">help</a>
+    <a href="#" data-cmd="about">about</a>
+    <a href="#" data-cmd="projects">projects</a>
+    <a href="#" data-cmd="contact">contact</a>
+    <a href="#" data-cmd="clear">clear</a>
+  </nav>
+
+  <main class="terminal" id="terminal">
+    <div class="terminal-body" id="term-body" role="log" aria-live="polite"></div>
+    <div class="terminal-line">
+      <span class="terminal-prompt" id="term-prompt">elias@tundra-node:~$</span>
+      <input class="terminal-input" id="term-input" type="text"
+             autocomplete="off" autocapitalize="off" spellcheck="false"
+             aria-label="Terminal command" autofocus>
+    </div>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
