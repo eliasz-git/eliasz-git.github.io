@@ -3,8 +3,8 @@ export const SITE = {
   name: 'Elias Zeiner',
   author: 'Elias Zeiner',
   email: 'eliaspublic@icloud.com',
-  url: 'https://tundra-node.github.io',
-  github: 'https://github.com/tundra-node',
+  url: 'https://eliasz.codeberg.page',
+  codeberg: 'https://codeberg.org/eliasz',
   linkedin: 'https://www.linkedin.com/in/eliaszeiner',
   description:
     'Privacy tools, homelab projects, cybersecurity notes, and open source software.',

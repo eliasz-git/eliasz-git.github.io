@@ -1,86 +1,81 @@
-# TundraOS
+# tundra-node — terminal site
 
-Elias Zeiner's personal website, built as a desktop operating system that runs in the browser. It's a portfolio, a blog, and a homelab all in one: the whole site is a draggable, resizable OS.
+Elias Zeiner's personal website, rebuilt as a terminal / Neofetch-inspired interactive page.
 
-Live at [tundra-node.github.io](https://tundra-node.github.io/).
+Live at [eliasz.codeberg.page](https://eliasz.codeberg.page/).
 
-![TundraOS desktop, dark theme, with the terminal and blog windows open](docs/screenshot-dark.png)
-
-<details>
-<summary>Light theme</summary>
-
-![TundraOS desktop, light theme](docs/screenshot-light.png)
-
-</details>
+![Terminal homepage showing Neofetch header and a command prompt](docs/screenshot-dark.png)
 
 ## What it is
 
-- **The site is the OS.** Every page is a full-screen desktop with a taskbar, app icons, and windows. Move to `/about/` and you're looking at the about window on your desktop, not a separate page layout.
-- **A real terminal.** Type `help` on the homepage for a command list. There's a virtual filesystem with `ls`, `cd`, `pwd`, and `cat`, built from the site's own content collections. `ls` then `cd projects` to browse what I've built. Tab completes, arrow keys walk history.
-- **A live desktop.** Windows drag by their title bars, stretch from the bottom-right corner, and layer with proper focus. The taskbar clock runs, the theme toggles dark/light, and the wallpaper is a network graph of my homelab that drifts and reacts to your cursor.
-- **Everything's real.** Projects, blog posts, and guides are all content collections. RSS, sitemap, JSON-LD, and SEO are handled the old-fashioned way, inside the windows.
-- **Small.** No framework runtime. The homepage is about 23 KB of HTML plus 15 KB of CSS and JS (about 10 KB gzipped in total).
+- **A terminal in the browser.** Type commands at the prompt (`help`, `about`, `projects`, `contact`, `clear`, `neofetch`, `whoami`, `ls`, `date`, `echo`, `history`, `sudo`, `exit`). Nav links at the top run the same commands.
+- **Neofetch header.** ASCII art logo on the left, system/bio/link info on the right.
+- **Keyboard-driven.** Enter executes, Up/Down walk history, Tab completes, input re-focuses after every output.
+- **Small & dependency-free.** Vanilla HTML/CSS/JS — no build step, no framework, no runtime. Just static files.
+- **Content carried over** from the previous Astro version: bio, links, and the 6 projects (Nix Config, CueKeeper, I2P Easy Manager, Nexus, Chronicle, FBLA Cybersecurity Study App).
 
 ## Sections
 
-- `/`: desktop with terminal, about, projects, blog, guides, contact
-- `/about/`: who I am and what I do
-- `/projects/`: privacy tools, homelab configs, open source
-- `/blog/`: notes and posts
-- `/guides/`: how-tos for I2P, self-hosting, and privacy tools
-- `/rss.xml`: feed
+| command | what it does |
+|---------|--------------|
+| `help` | list all commands |
+| `about` | bio and system information |
+| `projects` | list projects with stack, status, repo/live links |
+| `contact` | email, Codeberg, LinkedIn, site links |
+| `clear` | clear the terminal screen |
+| `neofetch` | show system information block |
+| `whoami` / `pwd` / `ls` | basic shell-like commands |
+| `date` / `echo` / `history` | standard CLI utilities |
 
-## Accessibility
+## Deployment — Codeberg Pages
 
-- All content is reachable from the keyboard: desktop icons and links are normal links, a skip link jumps to the open window, and Escape closes the active window and puts focus back on its icon. Dragging and resizing windows is mouse-only.
-- Text meets WCAG AA contrast in both themes.
-- With `prefers-reduced-motion`, the wallpaper stops moving and the snow is turned off.
-- On phones the icons become a top bar and windows go full width.
+This is a pure static site. Codeberg Pages serves it directly — no build step required.
+
+### Repository structure (repo root = publishing directory)
+
+```
+index.html          <- Neofetch header + terminal (entry point)
+style.css           <- dark terminal theme
+app.js              <- CLI logic (input buffer, history, commands)
+data.js             <- embedded site data (bio, links, projects)
+404.html            <- terminal-styled "not found" page
+.nojekyll           <- empty; tells Pages to skip static-site processing
+public/             <- favicon, og image, robots.txt, llms.txt
+docs/               <- screenshots
+src/                <- old Astro source (kept, not served)
+astro.config.mjs    <- old Astro config (kept, not served)
+package.json        <- old Astro tooling (kept, not served)
+```
+
+### Enabling Codeberg Pages
+
+1. Push this repo to Codeberg (`git remote add codeberg https://codeberg.org/eliasz/eliasz.codeberg.page.git` then `git push codeberg main`).
+2. Go to your repository on Codeberg → **Settings** → **Pages**.
+3. Set **Branch** to `main` and **Directory** to `/` (root).
+4. Click **Enable Pages**.
+5. The site will be live at `https://eliasz.codeberg.page/` (a few minutes to propagate).
+
+The `.nojekyll` file at the root prevents any static-site-generator processing, and relative links mean the page works regardless of the base path.
+
+### Local development
+
+No install required — just open `index.html` in a browser:
+
+```bash
+# serve locally (optional, uses Python)
+python3 -m http.server 8000
+# then visit http://localhost:8000
+```
+
+Or open `index.html` directly from the file system.
 
 ## Tech
 
-- [Astro](https://astro.build) 7 with MDX, content collections, RSS, and sitemap
-- Vanilla JS/TS for the window manager, wallpaper canvas, and terminal
-- Dark/light Nord themes, stored in `localStorage`, no framework
-- Deployed to GitHub Pages by GitHub Actions on push to `main` (`.github/workflows/deploy.yml` runs `npm ci`, `npm run check`, `npm run build`, then uploads `dist/`)
-
-## Development
-
-Needs Node 22.12 or newer.
-
-```bash
-npm ci
-npm run dev       # local dev server at http://localhost:4321
-npm run check     # astro check (TypeScript and template errors)
-npm run build     # static build to dist/
-npm run preview   # serve the build
-```
-
-There are no environment variables. Site name, email, and social links live in `src/consts.ts`.
-
-To add a post, guide, or project, drop a Markdown file in `src/content/blog/`, `src/content/guides/`, or `src/content/projects/`. The frontmatter schema is in `src/content.config.ts`. New entries show up in the windows, the terminal filesystem, the RSS feed, and the sitemap.
-
-## Layout
-
-```
-src/
-  components/   Window, Terminal, ThemeToggle
-  content/      blog, guides, projects (Markdown)
-  layouts/      Base.astro: desktop shell, wallpaper, window manager
-  pages/        routes; each page renders inside a window
-  styles/       global.css (themes and desktop styles)
-public/         favicon, og image, robots.txt, llms.txt
-docs/           README screenshots
-```
-
-## Built as a Stardust mission
-
-This project was built and submitted through Hack Club's Stardust program: a personal site, a web OS, and a second round of customization all in one.
-
-## AI usage
-
-Parts of this repo were written with help from AI coding agents, including an October 2026 cleanup pass (type-check fixes, contrast and keyboard fixes, this README and the screenshots).
+- Vanilla HTML5 / CSS3 / ES6 (no framework, no build tool)
+- Dark high-contrast terminal theme (Nord-inspired ANSI palette)
+- Responsive layout (stacks on mobile)
+- Deployed to Codeberg Pages from branch `main`, directory `/`
 
 ## License
 
-Code is under the [MIT License](LICENSE). The writing in `src/content/` is mine; please ask before reusing it.
+Code is under the [MIT License](LICENSE). The writing is mine; please ask before reusing it.

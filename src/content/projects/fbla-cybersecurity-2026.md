@@ -1,8 +1,8 @@
 ---
 title: FBLA Cybersecurity Study App
 description: Interactive 100-question study app for FBLA Cybersecurity with flashcards, mock quizzes, and a progress tracker.
-url: https://tundra-node.github.io/fbla-cybersecurity-2026/
-repo: https://github.com/tundra-node/fbla-cybersecurity-2026
+url: https://eliasz.codeberg.page/fbla-cybersecurity-2026/
+repo: https://codeberg.org/eliasz/fbla-cybersecurity-2026
 stack: [react, typescript, vite, tailwind]
 status: active
 highlight: true

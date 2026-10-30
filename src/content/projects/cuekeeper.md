@@ -1,7 +1,7 @@
 ---
 title: CueKeeper
 description: LAN-based theater sound cue manager. Load audio, sequence cues, trigger locally or remotely over WebSocket.
-repo: https://github.com/tundra-node/CueKeeper
+repo: https://codeberg.org/eliasz/CueKeeper
 stack: [python, websockets]
 status: active
 ---

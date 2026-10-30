@@ -1,7 +1,7 @@
 ---
 title: I2P Easy Manager
 description: Lightweight tool for simplified I2P network access with automated I2Pd and Firefox setup.
-repo: https://github.com/tundra-node/i2p-easy-manager
+repo: https://codeberg.org/eliasz/i2p-easy-manager
 stack: [python]
 status: active
 ---

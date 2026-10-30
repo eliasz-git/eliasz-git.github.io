@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://tundra-node.github.io',
+  site: 'https://eliasz.codeberg.page',
   integrations: [mdx(), sitemap()],
   markdown: {
     shikiConfig: {

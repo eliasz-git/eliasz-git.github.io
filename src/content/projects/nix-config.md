@@ -1,7 +1,7 @@
 ---
 title: Nix Config
 description: Personal NixOS and home-manager configuration with declarative system management.
-repo: https://github.com/tundra-node/nix-config
+repo: https://codeberg.org/eliasz/nix-config
 stack: [nix, nixos]
 status: active
 ---

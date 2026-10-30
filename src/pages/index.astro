@@ -1,125 +1,246 @@
 ---
 import Base from '../layouts/Base.astro';
-import Window from '../components/Window.astro';
-import Terminal from '../components/Terminal.astro';
 import { SITE } from '../consts';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('blog')).sort(
+const projects = (await getCollection('projects')).sort(
+  (a, b) => Number(b.data.highlight) - Number(a.data.highlight),
+);
+
+const blogPosts = (await getCollection('blog')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
-const projects = await getCollection('projects');
-const guides = await getCollection('guides');
 ---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{SITE.title}</title>
+    <meta name="description" content={SITE.description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="alternate" type="application/rss+xml" href="/rss.xml" title={SITE.title + ' feed'} />
+    <script is:inline>
+      (function () {
+        const THEME = 'tundra-site-theme';
+        const variants = ['dark', 'light'];
+        const colors = { dark: '#0a0a0a', light: '#ffffff' };
+        var read = function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } };
+        var variant = read(THEME) || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        if (variants.indexOf(variant) === -1) variant = 'dark';
+        document.documentElement.dataset.variant = variant;
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.content = colors[variant] || colors['dark'];
+      })();
+    </script>
+  </head>
 
-<Base canonicalPath="/" activePath="/">
-  <h1 class="visually-hidden">{SITE.title}</h1>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div id="desktop">
+      <main id="main">
+        <!-- Top prompt bar -->
+        <div class="top-bar" role="status" aria-live="polite">
+          <span class="prompt" id="term-prompt">~/home</span>
+          <span class="path" id="term-path">~</span>
+          <span class="key-hints">
+            <kbd class="key-hint">j</kbd><kbd class="key-hint">k</kbd><kbd class="key-hint">1-5</kbd><kbd class="key-hint">?</kbd>
+          </span>
+        </div>
 
-  <Window id="win-terminal" title="terminal" open width="480px" x={220} y={40}>
-    <Terminal />
-  </Window>
-
-  <Window id="win-about" title="about" width="380px" x={120} y={80}>
-    <h2>{SITE.name}</h2>
-    <p>
-      I'm a high school senior studying network security at a local vocational tech school. I
-      build privacy-focused tools, run a homelab, and write about what I learn.
-    </p>
-    <h3>stuff i do</h3>
-    <ul>
-      <li>cybersecurity student working toward a network security certificate</li>
-      <li>Eagle Scout candidate</li>
-      <li>FBLA. 5th at PA State 2026, NLC qualifier</li>
-      <li>homelab. two servers, self-hosted media stack, WireGuard, Pi-hole</li>
-      <li>open source. tools for I2P, privacy, and theater sound</li>
-    </ul>
-    <h3>interests</h3>
-    <ul>
-      <li>cybersecurity and red teaming</li>
-      <li>privacy and anti-surveillance</li>
-      <li>jazz guitar and music</li>
-      <li>retro computing</li>
-      <li>fitness</li>
-    </ul>
-  </Window>
-
-  <Window id="win-projects" title="projects" width="380px" x={150} y={120}>
-    <ul class="win-list">
-      {projects.map((project) => (
-        <li>
-          <a href={`/projects/${project.id}/`}>{project.data.title}</a>
-          <div class="desc">{project.data.description}</div>
-          {project.data.stack.length > 0 && (
-            <div class="tag-row">
-              {project.data.stack.map((s) => (
-                <span class="tag">{s}</span>
-              ))}
+        <!-- Home section -->
+        <div class="section" id="section-home" tabindex="0" role="region" aria-label="home">
+          <div class="neofetch" role="log" aria-live="polite">
+            <div class="neofetch-logo"><span class="logo-glyph">▤</span><span>tundra-node</span></div>
+            <div class="neofetch-info">
+              <dt>OS</dt><dd>Arch Linux x86_64</dd>
+              <dt>Shell</dt><dd>bash 5.2</dd>
+              <dt>DE</dt><dd>Astro</dd>
+              <dt>WM</dt><dd>terminal</dd>
+              <dt>Host</dt><dd>tundra-node</dd>
             </div>
-          )}
-        </li>
-      ))}
-    </ul>
-  </Window>
-
-  <Window id="win-blog" title="blog" width="380px" x={180} y={160}>
-    <ul class="win-list">
-      {posts.map((post) => (
-        <li>
-          <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-          <div class="desc">
-            {post.data.pubDate.toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            })}
+            <div class="neofetch-bars"><div class="neofetch-bar accent"></div><div class="neofetch-bar success"></div></div>
+            <div class="neofetch-info-row"><span>Uptime:</span><span id="neofetch-uptime">-- seconds</span></div>
           </div>
-        </li>
-      ))}
-    </ul>
-  </Window>
+        </div>
 
-  <Window id="win-guides" title="guides" width="380px" x={210} y={200}>
-    <ul class="win-list">
-      {guides.map((guide) => (
-        <li>
-          <a href={`/guides/${guide.id}/`}>{guide.data.title}</a>
-          <div class="desc">{guide.data.description}</div>
-        </li>
-      ))}
-    </ul>
-  </Window>
+        <!-- About section -->
+        <div class="section" id="section-about" tabindex="0" role="region" aria-label="about">
+          <div class="typing-wrapper" id="about-typing" role="log" aria-live="polite">
+            <span class="terminal-prompt">$</span><span class="terminal-cmd" id="about-cmd"></span><span class="typing-cursor"></span>
+          </div>
+          <div class="neofetch-info" style="margin-top: 2rem;">
+            <dt>Who</dt><dd>Elias Zeiner (tundra-node)</dd>
+            <dt>Role</dt><dd>Cybersecurity student & homelabber</dd>
+            <dt>Location</dt><dd>Local vocational tech school</dd>
+          </div>
+          <details class="about-section" open>
+            <summary>stuff i do</summary>
+            <ul class="ls-list">
+              <li class="ls-entry"><span class="dir">●</span><span class="name">cybersecurity student working toward a network security certificate</span></li>
+              <li class="ls-entry"><span class="dir">●</span><span class="name">Eagle Scout candidate</span></li>
+              <li class="ls-entry"><span class="dir">●</span><span class="name">FBLA. 5th at PA State 2026, NLC qualifier</span></li>
+              <li class="ls-entry"><span class="dir">●</span><span class="name">homelab. two servers, self-hosted media stack, WireGuard, Pi-hole</span></li>
+              <li class="ls-entry"><span class="dir">●</span><span class="name">open source. tools for I2P, privacy, and theater sound</span></li>
+            </ul>
+          </details>
+          <details class="about-section">
+            <summary>interests</summary>
+            <ul class="ls-list">
+              <li class="ls-entry"><span class="dir">●</span><span class="name">cybersecurity and red teaming</span></li>
+              <li class="ls-entry"><span class="dir">●</span><span class="name">privacy and anti-surveillance</span></li>
+              <li class="ls-entry"><span class="dir">●</span><span class="name">jazz guitar and music</span></li>
+              <li class="ls-entry"><span class="dir">●</span><span class="name">retro computing</span></li>
+              <li class="ls-entry"><span class="dir">●</span><span class="name">fitness</span></li>
+            </ul>
+          </details>
+        </div>
 
-  <Window id="win-contact" title="contact" width="380px" x={240} y={240}>
-    <ul class="win-list">
-      <li>
-        <a href={`mailto:${SITE.email}`}>email</a>
-        <div class="desc">{SITE.email}</div>
-      </li>
-      <li>
-        <a href={SITE.github}>github</a>
-        <div class="desc">@tundra-node</div>
-      </li>
-      <li>
-        <a href={SITE.linkedin}>linkedin</a>
-        <div class="desc">/in/eliaszeiner</div>
-      </li>
-      <li>
-        <a href="/rss.xml">rss</a>
-        <div class="desc">/rss.xml</div>
-      </li>
-    </ul>
-  </Window>
+        <!-- Projects section -->
+        <div class="section" id="section-projects" tabindex="0" role="region" aria-label="projects">
+          <div class="ls-list" id="projects-ls"></div>
+          {blogPosts.slice(0, 3).map((post) => (
+            <div style="margin-top: 2rem; font-size: 0.8rem; color: var(--muted);">
+              <span>Recent blog:</span><a href={`/blog/${post.id}/`} style="color: var(--accent); text-decoration: none;">{post.data.title}</a>
+            </div>
+          ))}
+        </div>
 
-  <Window id="win-linkedin" title="linkedin" width="380px" x={270} y={280}>
-    <p>
-      <a href={SITE.linkedin}>{SITE.linkedin}</a>
-    </p>
-  </Window>
+        <!-- Blog section -->
+        <div class="section" id="section-blog" tabindex="0" role="region" aria-label="blog">
+          <div class="ls-list" style="max-height: 300px; overflow-y: auto;">
+            {blogPosts.slice(0, 5).map((post) => (
+              <div class="ls-entry" key={post.id}>
+                <span class="dir">●</span><span class="name"><a href={`/blog/${post.id}/`} style="color: var(--accent); text-decoration: none;">{post.data.title}</a></span><span class="tag" style="color: var(--muted); font-size: 0.7rem;">{post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+              </div>
+            ))}
+          </div>
+          <div style="margin-top: 2rem; font-size: 0.8rem; color: var(--muted);"><a href="/blog/" style="color: var(--accent); text-decoration: none;">view all {blogPosts.length} posts →</a></div>
+        </div>
 
-  <Window id="win-rss" title="rss" width="380px" x={300} y={320}>
-    <p>
-      subscribe: <a href="/rss.xml">/rss.xml</a>
-    </p>
-  </Window>
-</Base>
+        <!-- Contact section -->
+        <div class="section" id="section-contact" tabindex="0" role="region" aria-label="contact">
+          <div class="contact-list" role="log" aria-live="polite">
+            <div class="contact-item"><span class="icon">✉</span><span class="label">email</span><span class="value">eliaspublic@icloud.com</span></div>
+            <div class="contact-item"><span class="icon">☰</span><span class="label">codeberg</span><span class="value">@eliasz</span></div>
+            <div class="contact-item"><span class="icon">in</span><span class="label">linkedin</span><span class="value">/in/eliaszeiner</span></div>
+            <div class="contact-item"><span class="icon">rss</span><span class="value">/rss.xml</span></div>
+          </div>
+          <div style="margin-top: 2rem; font-size: 0.8rem; color: var(--muted);"><span>Blinking cursor:</span><span class="terminal-cursor" style="display: inline-block; width: 0.6rem; height: 1rem; background: var(--accent); margin-left: 0.2rem; animation: blink 1s step-end infinite; vertical-align: middle;"></span></div>
+        </div>
+      </main>
+      <div class="bottom-bar" role="status" aria-live="polite">
+        <span class="section-count" id="section-count">[1/5]</span><span class="section-name" id="section-name">home</span>
+      </div>
+    </div>
+
+    <!-- Boot overlay -->
+    <div id="boot-overlay" class="boot-overlay" role="alert" aria-live="polite" style="display: none;"><div class="logo">tundra-node</div><div class="log-line">[ OK ] Loading ASTRO framework</div><div class="log-line">[ OK ] Initializing blue theme</div><div class="log-line">[ OK ] Loading terminal shell</div><div class="log-line">[ OK ] Boot complete</div></div>
+
+    <!-- Help overlay -->
+    <div id="help-overlay" class="help-overlay" role="dialog" aria-modal="true" aria-label="help" style="display: none;"><h2>Terminal Controls</h2><ul><li><kbd>j</kbd> / <kbd>↓</kbd> / <kbd>PageDown</kbd>: next section</li><li><kbd>k</kbd> / <kbd>↑</kbd> / <kbd>PageUp</kbd>: previous section</li><li><kbd>g</kbd> <kbd>g</kbd> or <kbd>Home</kbd>: first section</li><li><kbd>G</kbd> or <kbd>End</kbd>: last section</li><li><kbd>1</kbd>–<kbd>5</kbd>: jump to section</li><li><kbd>?</kbd>: toggle this help</li><li><kbd>Esc</kbd>: close help / skip boot</li></ul><button class="close" aria-label="Close help">×</button></div>
+
+    <script is:inline>
+      (function () {
+        // ========== BOOT SEQUENCE ==========
+        const bootOverlay = document.getElementById('boot-overlay');
+        const hasSeenBoot = sessionStorage.getItem('seenBoot') === 'true';
+
+        if (!hasSeenBoot && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          bootOverlay.style.display = 'flex';
+          setTimeout(() => { bootOverlay.style.opacity = '0'; bootOverlay.style.transition = 'opacity 2s ease-out'; bootOverlay.style.display = 'none'; }, 2500);
+
+          const skipBoot = () => { sessionStorage.setItem('seenBoot', 'true'); bootOverlay.style.display = 'none'; };
+          const keyHandler = (e) => { if (e.key === 'Escape' || e.key === ' ' || /^\d$/.test(e.key)) { skipBoot(); } };
+          const clickHandler = (e) => { if (e.target.closest('#boot-overlay')) { skipBoot(); } };
+          document.addEventListener('keydown', keyHandler);
+          document.addEventListener('click', clickHandler);
+        } else { bootOverlay.style.display = 'none'; }
+
+        // ========== KEYBOARD NAVIGATION ==========
+        const sections = [
+          document.getElementById('section-home'),
+          document.getElementById('section-about'),
+          document.getElementById('section-projects'),
+          document.getElementById('section-blog'),
+          document.getElementById('section-contact'),
+        ];
+        let currentSectionIdx = 0;
+
+        function updateUI(idx) {
+          const section = sections[idx];
+          if (!section) return;
+          currentSectionIdx = idx;
+          const prompts = ['~/home', '~/about', '~/projects', '~/blog', '~/contact'];
+          const pathEl = document.getElementById('term-path');
+          const promptEl = document.getElementById('term-prompt');
+          if (pathEl && promptEl) { pathEl.textContent = '/' + (idx + 1); promptEl.textContent = '~/' + ['home', 'about', 'projects', 'blog', 'contact'][idx]; }
+          const countEl = document.getElementById('section-count');
+          const nameEl = document.getElementById('section-name');
+          if (countEl && nameEl) { countEl.textContent = `[${idx + 1}/5]`; nameEl.textContent = section.getAttribute('aria-label') || 'home'; }
+          if (idx === 1) { startTypingEffect('about'); }
+        }
+
+        function startTypingEffect(sectionId) {
+          const typingEl = document.getElementById(`${sectionId}-typing`);
+          if (!typingEl) return;
+          typingEl.innerHTML = '';
+          const now = new Date();
+          const timestamp = now.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' });
+          let commands = [];
+          if (sectionId === 'about') {
+            commands = [ '$ cat about.md', `$ echo "${bio.split(' ').slice(0, 20).join(' ')}..."` ];
+          }
+          let idx = 0;
+          function typeNext() { if (idx >= commands.length) return; const span = document.createElement('span'); span.className = 'terminal-out'; span.textContent = commands[idx]; typingEl.appendChild(span); typingEl.scrollTop = typingEl.scrollHeight; idx++; setTimeout(typeNext, 300); }
+          setTimeout(typeNext, 300);
+        }
+
+        // ========== SCROLL-SNAP NAVIGATION ==========
+        function scrollToSection(idx, smooth = true) {
+          const section = sections[idx];
+          if (!section) return;
+          const options = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? { behavior: 'auto' } : { behavior: smooth ? 'smooth' : 'auto' };
+          section.scrollIntoView({ block: 'start', ...options });
+        }
+
+        function handleKeyDown(e) {
+          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+          if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+          let moved = false;
+
+          switch (e.key) {
+            case 'j': case 'ArrowDown': case 'PageDown':
+              e.preventDefault(); scrollToSection(currentSectionIdx + 1); moved = true; break;
+            case 'k': case 'ArrowUp': case 'PageUp':
+              e.preventDefault(); scrollToSection(currentSectionIdx - 1); moved = true; break;
+            case 'g':
+              if (e.key === 'g') { setTimeout(() => { if (e.key === 'g') { e.preventDefault(); scrollToSection(0); } }, 150); } else { e.preventDefault(); scrollToSection(0); moved = true; } break;
+            case 'G': case 'End':
+              e.preventDefault(); scrollToSection(sections.length - 1); moved = true; break;
+            case '1': case '2': case '3': case '4': case '5':
+              e.preventDefault(); const num = parseInt(e.key); if (num >= 1 && num <= sections.length) { scrollToSection(num - 1); } moved = true; break;
+            case '?':
+              e.preventDefault(); const helpOverlay = document.getElementById('help-overlay'); helpOverlay.style.display = helpOverlay.style.display === 'none' ? 'flex' : 'none'; break;
+            case 'Escape':
+              const help2 = document.getElementById('help-overlay'); if (help2.style.display !== 'none') { help2.style.display = 'none'; } break;
+          }
+          if (moved && currentSectionIdx >= 0 && currentSectionIdx < sections.length) { updateUI(currentSectionIdx); }
+        }
+
+        const typingObserver = new IntersectionObserver(
+          (entries) => { entries.forEach((entry, idx) => { if (entry.isIntersecting && !entry.target.dataset.typed) { entry.target.dataset.typed = 'true'; startTypingEffect(`section-${idx}`); } }); },
+          { threshold: 0.3, rootMargin: '0px 0px -50px 0px' }
+        );
+        sections.forEach((section, idx) => { typingObserver.observe(section); });
+
+        updateUI(0);
+        document.addEventListener('keydown', handleKeyDown);
+
+        const mainEl = document.getElementById('main');
+        if (mainEl) { mainEl.addEventListener('touchmove', (e) => { if (e.target.closest('#boot-overlay') || e.target.closest('#help-overlay')) { e.preventDefault(); } }, { passive: false }); }
+      })();
+    </script>
+  </body>
+</html>

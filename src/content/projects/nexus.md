@@ -1,7 +1,7 @@
 ---
 title: Nexus
 description: Monorepo for two self-hosted I2P tools. A public I2P search engine and a router dashboard.
-repo: https://github.com/tundra-node/nexus
+repo: https://codeberg.org/eliasz/nexus
 stack: [react, python, fastapi, docker]
 status: wip
 ---
